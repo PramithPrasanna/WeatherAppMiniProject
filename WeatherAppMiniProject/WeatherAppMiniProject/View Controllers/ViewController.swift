@@ -118,12 +118,15 @@ class ViewController: UIViewController, UISearchBarDelegate, CLLocationManagerDe
         // Calling based on lat/lon rather than city name due to city name API call deprecation
         fetchGeocodingData(city: location, limit: 1) { coordinateData, error in
             if let coordinateData = coordinateData {
-                // Call the API to fetch weather data and populate the view with the information given latitude/longitude
-                fetchWeatherData(latitude: coordinateData[0].lat, longitude: coordinateData[0].lon) { weatherData, error in
-                    if let weatherData = weatherData {
-                        self.populateView(weatherData: weatherData, city: location)
-                    } else if let error = error {
-                        print("Weather API error: \(error)")
+                // Check if city input in search bar actually exists
+                if (!coordinateData.isEmpty) {
+                    // Call the API to fetch weather data and populate the view with the information given latitude/longitude
+                    fetchWeatherData(latitude: coordinateData[0].lat, longitude: coordinateData[0].lon) { weatherData, error in
+                        if let weatherData = weatherData {
+                            self.populateView(weatherData: weatherData, city: location)
+                        } else if let error = error {
+                            print("Weather API error: \(error)")
+                        }
                     }
                 }
             } else if let error = error {
@@ -179,3 +182,4 @@ extension ViewController {
         UserDefaults.standard.set(searchText, forKey: "lastSearchValue")
     }
 }
+
